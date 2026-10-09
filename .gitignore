@@ -1,0 +1,6 @@
+# Ambientes virtuais e cache
+.venv/
+__pycache__/
+
+# Opcional: ignorar a pasta de resultados se ela contiver apenas dados gerados
+results/
