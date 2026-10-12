@@ -4,7 +4,7 @@ Automatização de relatórios de saúde de ratos no biotério do laboratório d
 _Esse projeto está sendo realizado com o apoio da Fundação de Amparo à Pesquisa do Estado de São Paulo (FAPESP). Nº de processo: 2023/14458-0_
 
 ## Status do Projeto
-**Em andamento** ![55%](https://geps.dev/progress/55)
+**Em andamento** ![55%](https://geps.dev/progress/55?barColor=32a852)
 
 ## Para fazer
 - [X] Formulário Google para coleta diária
