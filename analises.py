@@ -20,7 +20,7 @@ def estabilidade_de_peso(df, show_plot = False):
         .sort_values(['id', 'data'])
         .reset_index(drop=True)
     )
-    df = df.groupby('id').tail(4).reset_index(drop=True)
+    df = df.groupby('id').tail(7).reset_index(drop=True)
     df['session_i'] = df.groupby('id').cumcount() + 1
 
     media_3 = df[df['session_i'] <= 3].groupby('id')['peso'].mean()
@@ -29,14 +29,14 @@ def estabilidade_de_peso(df, show_plot = False):
     df['peso_estavel'] = df['id'].map(media_3)
     df['diff_estavel'] = df['peso'] / df['peso_estavel']
 
-    fig, grafs = plt.subplots(6, 3, figsize=(8, 8))
-    axes = grafs.flatten()
+    fig, axes = plt.subplots(6, 3, figsize=(8, 8))
+    axes = axes.flatten()
     for i, ax in enumerate(axes):
 
         df_rato = df[df['id'] == i + 1].copy()
 
-        ax.fill_between([3.5, 4.5], 0.8, 1.2, color="#F78F8F", alpha=1)
-        ax.fill_between([3.5, 4.5], 0.9, 1.1, color="#F8F7C4", alpha=1)
+        ax.fill_between([3.5, 7.5], 0.8, 1.2, color="#F78F8F", alpha=1)
+        ax.fill_between([3.5, 7.5], 0.9, 1.1, color="#F8F7C4", alpha=1)
 
         if df_rato['diff_estavel'].iloc[-1] > 1.10:
             ax.set_facecolor("#FDFBC9")
@@ -47,13 +47,13 @@ def estabilidade_de_peso(df, show_plot = False):
         ax.plot(df_rato['session_i'][:3], df_rato['diff_estavel'][:3], color='black', linewidth=1)
         
         ax.set_ylim(0.8, 1.2)
-        ax.set_xlim(0.5, 4.5)
+        ax.set_xlim(0.5, 7.5)
 
-        ax.set_xticks(range(1, 5))
+        ax.set_xticks(range(1, 8))
         ax.set_xticklabels([])
 
         if i == 17:
-            dias = pd.to_datetime(df_rato['data']).dt.strftime('%d/%m')
+            dias = pd.to_datetime(df_rato['data']).dt.strftime('%d')
             ax.set_xticklabels(dias)
 
         if i == 0:
