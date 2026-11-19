@@ -138,9 +138,17 @@ def evolucao_peso(df, show_plot = False):
         plt.savefig(join(PATH_RESULTS, 'ultimas_sete_pesagens.png'), dpi=400)
     plt.close()
 
+def peso_alvo(df):
+    df = df.copy()
+    inicial = df[df['data']=='2026-11-17'].copy()
+    peso_alvo = dict(zip(inicial['id'], round(inicial['peso'] * 0.85, 2)))
+    df['alvo'] = df['id'].map(peso_alvo)
+
+    return df
 
 if __name__ == '__main__':
     from limpeza import clean_sheet
     df = clean_sheet()
-    print(estabilidade_de_peso(df))
+    # print(estabilidade_de_peso(df))
+    print(peso_alvo(df))
     plt.show()
