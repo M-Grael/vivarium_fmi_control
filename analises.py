@@ -199,9 +199,29 @@ def peso_alvo(df, show_plot = False):
 
     plt.close()
 
+def exportar_excel(df):
+    df = df.copy()
+    df = df.dropna()
+
+    pivot = df.pivot_table(values='peso', index='id', columns='data')
+
+    # Ordena as colunas da data mais recente para a mais antiga
+    pivot = pivot.sort_index(axis=1, ascending=False)
+    
+    pivot = pivot.reset_index()
+
+    pivot.columns.name = None
+    pivot.columns = [
+        'id' if column == 'id' else pd.Timestamp(column).strftime('%d/%m')
+        for column in pivot.columns
+    ]
+
+    pivot.to_excel(join(PATH_RESULTS, 'pesos.xlsx'), index=False)
+
+
+    return pivot
+
 if __name__ == '__main__':
     from limpeza import clean_sheet
     df = clean_sheet()
-    # print(estabilidade_de_peso(df))
-    print(peso_alvo(df))
-    plt.show()
+    print(exportar_excel(df))
