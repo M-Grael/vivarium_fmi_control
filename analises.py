@@ -5,6 +5,8 @@ import math
 from os import makedirs
 from os.path import join
 
+PATH_RESULTS = 'results'
+
 def __roundup(x):
     return int(math.ceil(x / 50)) * 50
 def __rounddown(x):
@@ -69,16 +71,13 @@ def estabilidade_de_peso(df, show_plot = False):
     fig.suptitle('Diferença relativa da última pesagem em relação à estabilidade\nobservada nas três sessões anteriores')
     fig.supxlabel('Data da pesagem')
 
-
     fig.tight_layout()
-    PATH_RESULTS = 'results'
 
-    fig.tight_layout()
+    makedirs(PATH_RESULTS, exist_ok=True)
+    plt.savefig(join(PATH_RESULTS, 'diferca_estabilidade.png'), dpi=400)
+    
     if show_plot:
         plt.show()
-    else:
-        makedirs(PATH_RESULTS, exist_ok=True)
-        plt.savefig(join(PATH_RESULTS, 'diferca_estabilidade.png'), dpi=400)
     plt.close()
 
 def evolucao_peso(df, show_plot = False):
@@ -127,24 +126,78 @@ def evolucao_peso(df, show_plot = False):
             ax.spines[spine].set_visible(False)
 
     fig.suptitle(f'Peso em gramas das últimas 7 pesagens\n\n{data_min.day}/{data_min.month}/{data_min.year} — {data_max.day}/{data_max.month}/{data_max.year}')
-    
-    PATH_RESULTS = 'results'
-
     fig.tight_layout()
+    
+    makedirs(PATH_RESULTS, exist_ok=True)
+    plt.savefig(join(PATH_RESULTS, 'ultimas_sete_pesagens.png'), dpi=400)    
+
     if show_plot:
         plt.show()
-    else:
-        makedirs(PATH_RESULTS, exist_ok=True)
-        plt.savefig(join(PATH_RESULTS, 'ultimas_sete_pesagens.png'), dpi=400)
     plt.close()
 
-def peso_alvo(df):
+def peso_alvo(df, show_plot = False):
     df = df.copy()
     inicial = df[df['data']=='2026-11-17'].copy()
     peso_alvo = dict(zip(inicial['id'], round(inicial['peso'] * 0.85, 2)))
     df['alvo'] = df['id'].map(peso_alvo)
 
-    return df
+    df = df.sort_values(by=['id', 'data']).reset_index(drop=True)
+    df = df.groupby('id').tail(7).reset_index(drop=True)
+    df['session_i'] = df.groupby('id').cumcount() + 1
+    df['peso_relativo'] = df['peso'] / df['alvo']
+
+
+    fig, axes = plt.subplots(6, 3, figsize=(6, 6))
+    axes = axes.flatten()
+    for i, ax in enumerate(axes):
+
+        df_rato = df[df['id'] == i + 1].copy()
+        ax.scatter(df_rato['session_i'], df_rato['peso_relativo'], color='black', marker='s')
+        ax.plot(df_rato['session_i'], df_rato['peso_relativo'], color='black', linewidth=1)
+
+        sessions_nan = df_rato.loc[df_rato['peso'].isna(), 'session_i']
+        for nan in sessions_nan:
+            ax.text(nan, 1, '?')
+
+        peso_alvo = df_rato['alvo'].iloc[0]
+        peso_alvo_txt = f'peso alvo = {peso_alvo}' if i == 0 else f'{peso_alvo}'
+        ax.text(7.5, 0.8, peso_alvo_txt, va='bottom', ha='right')
+
+        n_rato = f'rato n°{i+1}' if i == 0 else f'{i+1}'
+        ax.text(0.5, 1, n_rato, va='top', ha='center', transform=ax.transAxes)
+
+        ax.set_ylim(0.8, 1.2)
+        ax.set_xlim(0.5, 7.5)
+
+        if df_rato['peso'].min() < df_rato['alvo'].min():
+            ax.set_facecolor("#BDE99E")
+
+        ax.set_xticks(range(1, 8))
+        ax.set_xticklabels([])
+        if i == 17:
+            dias = pd.to_datetime(df_rato['data']).dt.strftime('%d')
+            ax.set_xticklabels(dias)
+
+        if i == 0:
+            ax.set_yticks([0.8, 1, 1.2])
+        else:
+            ax.set_yticks([])
+
+        ax.axhline(1, ls='--', color='gray')
+
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+    
+    fig.supylabel('Peso relativo ao alvo (peso / peso alvo)')
+    fig.tight_layout()
+    
+    makedirs(PATH_RESULTS, exist_ok=True)
+    plt.savefig(join(PATH_RESULTS, 'peso_alvo.png'), dpi=400)    
+    
+    if show_plot:
+        plt.show()
+
+    plt.close()
 
 if __name__ == '__main__':
     from limpeza import clean_sheet
