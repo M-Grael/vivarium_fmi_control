@@ -230,4 +230,5 @@ def exportar_excel(df):
 if __name__ == '__main__':
     from limpeza import clean_sheet
     df = clean_sheet()
+    evolucao_peso(df, show_plot=True)
     peso_alvo(df, show_plot=True, exclude_last=False)
