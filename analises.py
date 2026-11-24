@@ -142,9 +142,11 @@ def peso_alvo(df, show_plot = False):
     df['alvo'] = df['id'].map(peso_alvo)
 
     df = df.sort_values(by=['id', 'data']).reset_index(drop=True)
-    df = df.groupby('id').tail(7).reset_index(drop=True)
+    df = df.groupby('id').tail(8).reset_index(drop=True)
     df['session_i'] = df.groupby('id').cumcount() + 1
     df['peso_relativo'] = df['peso'] / df['alvo']
+
+    df = df[df['session_i'] != 8]
 
 
     fig, axes = plt.subplots(6, 3, figsize=(6, 6))
@@ -223,4 +225,4 @@ def exportar_excel(df):
 if __name__ == '__main__':
     from limpeza import clean_sheet
     df = clean_sheet()
-    print(exportar_excel(df))
+    peso_alvo(df)

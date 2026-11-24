@@ -2,8 +2,8 @@ name: Enviar análises diárias por e-mail
 
 on:
   schedule:
-    # 01:00 UTC = 23:00 (horário de Brasília)
-    - cron: '0 2 * * *'
+    # 08:50 UTC = 05:50 (horário de Brasília)
+    - cron: '50 8 * * *'
   workflow_dispatch:
 
 jobs:
