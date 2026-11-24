@@ -135,18 +135,23 @@ def evolucao_peso(df, show_plot = False):
         plt.show()
     plt.close()
 
-def peso_alvo(df, show_plot = False):
+def peso_alvo(df, show_plot = False, exclude_last = True):
     df = df.copy()
     inicial = df[df['data']=='2026-11-17'].copy()
     peso_alvo = dict(zip(inicial['id'], round(inicial['peso'] * 0.85, 2)))
     df['alvo'] = df['id'].map(peso_alvo)
 
     df = df.sort_values(by=['id', 'data']).reset_index(drop=True)
-    df = df.groupby('id').tail(8).reset_index(drop=True)
-    df['session_i'] = df.groupby('id').cumcount() + 1
+    
+    if exclude_last:
+        df = df.groupby('id').tail(8).reset_index(drop=True)
+        df['session_i'] = df.groupby('id').cumcount() + 1
+        df = df[df['session_i'] != 8]
+    else:
+        df = df.groupby('id').tail(7).reset_index(drop=True)
+        df['session_i'] = df.groupby('id').cumcount() + 1
+    
     df['peso_relativo'] = df['peso'] / df['alvo']
-
-    df = df[df['session_i'] != 8]
 
 
     fig, axes = plt.subplots(6, 3, figsize=(6, 6))
@@ -225,4 +230,4 @@ def exportar_excel(df):
 if __name__ == '__main__':
     from limpeza import clean_sheet
     df = clean_sheet()
-    peso_alvo(df)
+    peso_alvo(df, show_plot=True, exclude_last=False)
