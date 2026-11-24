@@ -26,11 +26,11 @@ def enviar_relatorio():
     hoje = date.today().strftime('%d/%m/%Y')
 
     msg = EmailMessage()
-    msg['Subject'] = f'Relatório diário de pesagem - {hoje}'
+    msg['Subject'] = f'Relatório diário de pesagem e saúde dos animais - {hoje}'
     msg['From'] = remetente
     msg['To'] = ', '.join(destinatarios)
     msg.set_content(
-        f'Olá,\n\nSeguem em anexo as análises atualizadas de pesagem do dia {hoje}.\n'
+        f'Olá amigos,\n\nSeguem em anexo as análises atualizadas de pesagem do dia {hoje}.\n'
     )
 
     for nome_arquivo in ARQUIVOS:

@@ -68,7 +68,7 @@ def estabilidade_de_peso(df, show_plot = False):
         for spine in ['top', 'right']:
             ax.spines[spine].set_visible(False)
 
-    fig.suptitle('Diferença relativa da última pesagem em relação à estabilidade\nobservada nas três sessões anteriores')
+    fig.suptitle('Diferença relativa das últimas quatro pesagens em relação à estabilidade\nobservada nas três sessões anteriores')
     fig.supxlabel('Data da pesagem')
 
     fig.tight_layout()

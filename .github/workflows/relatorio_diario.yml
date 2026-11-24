@@ -2,10 +2,9 @@ name: Enviar análises diárias por e-mail
 
 on:
   schedule:
-    # O horário do cron é em UTC!
-    # Exemplo: 0 21 * * * = 21:00 UTC = 18:00 (horário de Brasília)
-    - cron: '0 21 * * *'
-  workflow_dispatch: # Permite rodar manualmente pela aba Actions para testar
+    # 09:00 UTC = 06:00 (horário de Brasília)
+    - cron: '0 9 * * *'
+  workflow_dispatch:
 
 jobs:
   executar-analises:
