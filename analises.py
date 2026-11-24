@@ -160,7 +160,7 @@ def peso_alvo(df, show_plot = False):
             ax.text(nan, 1, '?')
 
         peso_alvo = df_rato['alvo'].iloc[0]
-        peso_alvo_txt = f'peso alvo = {peso_alvo}' if i == 0 else f'{peso_alvo}'
+        peso_alvo_txt = f'peso alvo = {peso_alvo:.0f}' if i == 0 else f'{peso_alvo:.0f}'
         ax.text(7.5, 0.8, peso_alvo_txt, va='bottom', ha='right')
 
         n_rato = f'rato n°{i+1}' if i == 0 else f'{i+1}'
@@ -205,7 +205,6 @@ def exportar_excel(df):
 
     pivot = df.pivot_table(values='peso', index='id', columns='data')
 
-    # Ordena as colunas da data mais recente para a mais antiga
     pivot = pivot.sort_index(axis=1, ascending=False)
     
     pivot = pivot.reset_index()
