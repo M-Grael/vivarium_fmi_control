@@ -1,5 +1,5 @@
 import matplotlib
-matplotlib.use('Agg')  # Evita erro de interface gráfica no servidor
+matplotlib.use('Agg')
 
 from limpeza import clean_sheet
 from analises import estabilidade_de_peso, evolucao_peso, peso_alvo, exportar_excel
